@@ -1,63 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="https://img.icons8.com/?size=100&id=40886&format=png&color=000000"
+    />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ToDo List App</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
     <div id="app">
-        <div class="todo-container">
-            <!-- Header Section -->
-            <header class="todo-header">
-                <h1>My ToDo List</h1>
-                <p class="task-counter">
-                    <!-- JavaScript will update this -->
-                    <span id="taskCount">0</span> tasks remaining
-                </p>
-            </header>
+      <div class="todo-container">
+        <!-- Header Section -->
+        <header class="todo-header">
+          <h1>My ToDo List</h1>
+          <p class="task-counter">
+            <!-- JavaScript will update this -->
+            <span id="taskCount">0</span> tasks remaining
+          </p>
+        </header>
 
-            <!-- Add Task Form -->
-            <form id="addTaskForm" class="add-task-form">
-                <!-- preventDefault() will be added via JavaScript -->
-                <input 
-                    type="text" 
-                    id="newTaskInput" 
-                    placeholder="What needs to be done?"
-                    required
-                >
-                <button type="submit" class="add-button">Add Task</button>
-            </form>
+        <!-- Add Task Form -->
+        <form id="addTaskForm" class="add-task-form">
+          <!-- preventDefault() will be added via JavaScript -->
+          <input
+            type="text"
+            id="newTaskInput"
+            placeholder="What needs to be done?"
+            required
+          />
+          <button type="submit" class="add-button">Add Task</button>
+        </form>
 
-            <!-- Task List Container -->
-            <div class="task-list-container">
-                <!-- Task list will be populated by JavaScript -->
-                <ul id="taskList" class="task-list">
-                    <!-- Example Task Item (will be generated via JavaScript) -->
-                    <li class="task-item">
-                        <div class="task-content">
-                            <input type="checkbox" class="task-checkbox">
-                            <span class="task-text">Example Task</span>
-                        </div>
-                        <button class="delete-button">Delete</button>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Filter Buttons -->
-            <div class="filter-buttons">
-                <!-- data-filter attributes will be used by JavaScript -->
-                <button class="filter-btn active" data-filter="all">All</button>
-                <button class="filter-btn" data-filter="active">Active</button>
-                <button class="filter-btn" data-filter="completed">Completed</button>
-                <button class="clear-completed">Clear Completed</button>
-            </div>
+        <!-- Task List Container -->
+        <div class="task-list-container">
+          <!-- Task list will be populated by JavaScript -->
+          <ul id="taskList" class="task-list">
+          </ul>
         </div>
-    </div>
 
-    <!-- JavaScript entry point -->
+        <!-- Filter Buttons -->
+        <div class="filter-buttons">
+          <!-- data-filter attributes will be used by JavaScript -->
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="active">Active</button>
+          <button class="filter-btn" data-filter="completed">Completed</button>
+          <button class="clear-completed">Clear Completed</button>
+        </div>
+      </div>
+    </div>
     <script type="module" src="./src/scripts/main.js"></script>
-</body>
+  </body>
 </html>
