@@ -9,49 +9,52 @@
     />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ToDo List App</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="src/styles/style.css" />
   </head>
   <body>
     <div id="app">
-      <div class="todo-container">
-        <!-- Header Section -->
-        <header class="todo-header">
-          <h1>My ToDo List</h1>
-          <p class="task-counter">
-            <!-- JavaScript will update this -->
+      <div class="todo">
+        <!-- Header -->
+        <header class="todo__header">
+          <h1 class="todo__title">My ToDo List</h1>
+          <p class="todo__counter">
             <span id="taskCount">0</span> tasks remaining
           </p>
         </header>
 
         <!-- Add Task Form -->
-        <form id="addTaskForm" class="add-task-form">
-          <!-- preventDefault() will be added via JavaScript -->
+        <form id="addTaskForm" class="todo__form">
           <input
             type="text"
             id="newTaskInput"
+            class="todo__input"
             placeholder="What needs to be done?"
             required
           />
-          <button type="submit" class="add-button">Add Task</button>
+          <button type="submit" class="todo__add-button">Add Task</button>
         </form>
 
-        <!-- Task List Container -->
-        <div class="task-list-container">
-          <!-- Task list will be populated by JavaScript -->
-          <ul id="taskList" class="task-list">
-          </ul>
+        <!-- Task List -->
+        <div class="todo__tasks">
+          <ul id="taskList" class="todo__list"></ul>
         </div>
 
-        <!-- Filter Buttons -->
-        <div class="filter-buttons">
-          <!-- data-filter attributes will be used by JavaScript -->
-          <button class="filter-btn active" data-filter="all">All</button>
-          <button class="filter-btn" data-filter="active">Active</button>
-          <button class="filter-btn" data-filter="completed">Completed</button>
-          <button class="clear-completed">Clear Completed</button>
+        <!-- Filters -->
+        <div class="todo__filters">
+          <button
+            class="todo__filter-btn todo__filter-btn--active"
+            data-filter="all"
+          >
+            All
+          </button>
+          <button class="todo__filter-btn" data-filter="active">Active</button>
+          <button class="todo__filter-btn" data-filter="completed">
+            Completed
+          </button>
+          <button class="todo__clear-completed">Clear Completed</button>
         </div>
       </div>
     </div>
-    <script type="module" src="./src/scripts/main.js"></script>
+    <script type="module" src="src/scripts/main.js"></script>
   </body>
 </html>
