@@ -36,8 +36,13 @@ class TaskList {
       task.setTaskEdit(text);
     }
   }
+
   filterByStatus(status) {
     return this.tasks.filter((task) => task.isCompleted === status);
+  }
+
+  getTasks() {
+    return this.tasks;
   }
 }
 
