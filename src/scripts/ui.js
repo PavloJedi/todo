@@ -3,6 +3,7 @@ import { saveTaskList } from "./storage.js";
 const taskListElement = document.getElementById("taskList");
 const clearButton = document.querySelector(".todo__clear-completed");
 const filterButtons = document.querySelectorAll(".todo__filter-btn");
+const taskCount = document.getElementById("taskCount");
 
 export const renderTaskList = (tasks, listManager, filter = "all") => {
   taskListElement.innerHTML = "";
@@ -61,7 +62,13 @@ export const renderTaskList = (tasks, listManager, filter = "all") => {
     item.append(checkbox, text, deleteButton);
     taskListElement.appendChild(item);
   });
+  updateTaskCount(tasks);
 };
+
+function updateTaskCount(tasks) {
+  const remaining = tasks.filter((t) => !t.isCompleted && !t.deleted).length;
+  taskCount.textContent = `${remaining} `;
+}
 
 const applyFilter = (filter, tasks, listManager) => {
   const filteredTasks =
