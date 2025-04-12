@@ -6,4 +6,12 @@ function loadTaskList() {
   return JSON.parse(localStorage.getItem("taskList")) || [];
 }
 
-export { saveTaskList, loadTaskList };
+function saveListManager(listManager) {
+  localStorage.setItem("listManager", JSON.stringify(listManager));
+}
+
+function loadListManager() {
+  return JSON.parse(localStorage.getItem("listManager")) || { list: [] };
+}
+
+export { saveTaskList, loadTaskList, saveListManager, loadListManager };

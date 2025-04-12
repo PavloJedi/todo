@@ -1,9 +1,16 @@
-import { saveTaskList } from "./storage.js";
+import { saveTaskList, saveListManager } from "./storage.js";
 
 const taskListElement = document.getElementById("taskList");
 const clearButton = document.querySelector(".todo__clear-completed");
 const filterButtons = document.querySelectorAll(".todo__filter-btn");
 const taskCount = document.getElementById("taskCount");
+const listPopup = document.getElementById("taskListPopup");
+const allButton = document.querySelector(".todo__filter-btn--active");
+
+function updateTaskCount(tasks) {
+  const remaining = tasks.filter((t) => !t.isCompleted && !t.deleted).length;
+  taskCount.textContent = `${remaining} tasks remaining`;
+}
 
 export const renderTaskList = (tasks, listManager, filter = "all") => {
   taskListElement.innerHTML = "";
@@ -14,10 +21,10 @@ export const renderTaskList = (tasks, listManager, filter = "all") => {
 
   const filteredTasks =
     filter === "active"
-      ? tasks.filter((t) => !t.isCompleted)
+      ? tasks.filter((t) => !t.isCompleted && !t.deleted)
       : filter === "completed"
       ? tasks.filter((t) => t.isCompleted)
-      : tasks.filter((t) => !t.isCompleted);
+      : tasks.filter((t) => !t.isCompleted && !t.deleted);
 
   filteredTasks.forEach((task) => {
     const item = document.createElement("li");
@@ -65,22 +72,66 @@ export const renderTaskList = (tasks, listManager, filter = "all") => {
   updateTaskCount(tasks);
 };
 
-function updateTaskCount(tasks) {
-  const remaining = tasks.filter((t) => !t.isCompleted && !t.deleted).length;
-  taskCount.textContent = `${remaining} `;
-}
+export const renderListPopup = (listManager, taskList) => {
+  const popupList = listPopup.querySelector(".popup__list");
+  popupList.innerHTML = "";
 
-const applyFilter = (filter, tasks, listManager) => {
-  const filteredTasks =
-    filter === "active"
-      ? tasks.filter((t) => !t.isCompleted)
-      : filter === "completed"
-      ? tasks.filter((t) => t.isCompleted)
-      : tasks.filter((t) => !t.isCompleted);
-  renderTaskList(filteredTasks, listManager, filter);
+  listManager.list.forEach((list) => {
+    const item = document.createElement("li");
+    item.className = `popup__item ${list.active ? "popup__item--active" : ""}`;
+    item.textContent = list.name;
+    item.addEventListener("click", () => {
+      listManager.setActiveList(list.id);
+      saveTaskList(taskList.getTasks());
+      renderTaskList(taskList.getTasks(), listManager);
+      updateActiveListButton(list.name);
+      listPopup.style.display = "none";
+    });
+    popupList.appendChild(item);
+  });
+
+  const createButton = listPopup.querySelector(".popup__create-btn");
+  if (!createButton.dataset.listenerAdded) {
+    createButton.dataset.listenerAdded = "true";
+    createButton.addEventListener("click", () => {
+      createButton.style.display = "none";
+      const input = document.createElement("input");
+      input.type = "text";
+      input.placeholder = "New list name";
+      input.className = "popup__create-input";
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          const listName = input.value.trim();
+          if (listName) {
+            const newList = listManager.createList(listName);
+            listManager.setActiveList(newList.id);
+            saveListManager(listManager); // Save lists to LocalStorage
+            renderTaskList(taskList.getTasks(), listManager);
+            updateActiveListButton(listName);
+            renderListPopup(listManager, taskList);
+          }
+          listPopup.removeChild(input);
+          createButton.style.display = "block";
+        }
+      });
+      listPopup.appendChild(input);
+      input.focus();
+    });
+  }
+};
+
+const updateActiveListButton = (listName) => {
+  allButton.textContent = listName;
 };
 
 export const setupUI = (taskList, listManager) => {
+  allButton.addEventListener("click", () => {
+    listPopup.style.display =
+      listPopup.style.display === "block" ? "none" : "block";
+    renderListPopup(listManager, taskList);
+  });
+
   filterButtons.forEach((button) =>
     button.addEventListener("click", () => {
       filterButtons.forEach((b) => b.classList.remove("active"));
@@ -112,4 +163,14 @@ export const setupUI = (taskList, listManager) => {
       }
     }
   });
+};
+
+export const applyFilter = (filter, tasks, listManager) => {
+  const filteredTasks =
+    filter === "active"
+      ? tasks.filter((t) => !t.isCompleted && !t.deleted)
+      : filter === "completed"
+      ? tasks.filter((t) => t.isCompleted)
+      : tasks.filter((t) => !t.isCompleted && !t.deleted);
+  renderTaskList(filteredTasks, listManager, filter);
 };

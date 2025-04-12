@@ -1,10 +1,10 @@
 class ListManager {
-  constructor() {
-    this.list = [];
+  constructor(data = { list: [] }) {
+    this.list = data.list;
   }
 
   createList(name) {
-    const list = { id: this.list.length + 1, name, tasks: [] };
+    const list = { id: this.list.length + 1, name, tasks: [], active: false };
     this.list.push(list);
     return list;
   }
