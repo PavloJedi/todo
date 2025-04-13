@@ -52,7 +52,7 @@ export const renderTaskList = (tasks, listManager, filter = "all") => {
     text.textContent = task.text;
 
     const deleteButton = document.createElement("button");
-    deleteButton.textContent = "Delete";
+    deleteButton.innerHTML = "&times;";
     deleteButton.className = "task-delete-btn";
     deleteButton.addEventListener("click", () => {
       task.deleted = true;
@@ -80,13 +80,32 @@ export const renderListPopup = (listManager, taskList) => {
     const item = document.createElement("li");
     item.className = `popup__item ${list.active ? "popup__item--active" : ""}`;
     item.textContent = list.name;
+
     item.addEventListener("click", () => {
       listManager.setActiveList(list.id);
-      saveTaskList(taskList.getTasks());
+      saveListManager(listManager);
       renderTaskList(taskList.getTasks(), listManager);
+      renderListPopup(listManager, taskList);
       updateActiveListButton(list.name);
-      listPopup.style.display = "none";
     });
+
+    const deleteIcon = document.createElement("button");
+    deleteIcon.innerHTML = "&times;";
+    deleteIcon.className = "list-delete-btn";
+    deleteIcon.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const isActiveList = list.active;
+      listManager.list = listManager.list.filter((l) => l.id !== list.id);
+      saveListManager(listManager);
+      if (isActiveList) {
+        listManager.setActiveList(null); // Reset active list
+        updateActiveListButton("All");
+      }
+      renderListPopup(listManager, taskList);
+      renderTaskList(taskList.getTasks(), listManager);
+    });
+
+    item.appendChild(deleteIcon);
     popupList.appendChild(item);
   });
 
@@ -132,13 +151,13 @@ export const setupUI = (taskList, listManager) => {
     renderListPopup(listManager, taskList);
   });
 
-  filterButtons.forEach((button) =>
+  filterButtons.forEach((button) => {
     button.addEventListener("click", () => {
       filterButtons.forEach((b) => b.classList.remove("active"));
       button.classList.add("active");
       applyFilter(button.dataset.filter, taskList.getTasks(), listManager);
-    })
-  );
+    });
+  });
 
   clearButton.addEventListener("click", () => {
     taskList.setTasks(taskList.getTasks().filter((t) => !t.isCompleted));
