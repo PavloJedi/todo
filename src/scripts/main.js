@@ -1,4 +1,6 @@
-import { renderTaskList, renderListPopup, setupUI } from "./ui.js";
+import { renderTaskList } from "./taskRenderer.js";
+import { renderListPopup } from "./listUI.js";
+import { setupUI } from "./ui.js";
 import {
   saveTaskList,
   loadTaskList,

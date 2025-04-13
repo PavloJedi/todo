@@ -12,6 +12,104 @@ function updateTaskCount(tasks) {
   taskCount.textContent = `${remaining} tasks remaining`;
 }
 
+const renderDueDateOptions = (task, tasks, listManager) => {
+  const existingPicker = document.querySelector(
+    `.todo__item[data-id='${task.id}'] .due-date-options`
+  );
+  if (existingPicker) {
+    existingPicker.remove();
+    return; // Toggle logic: remove if already exists
+  }
+
+  const dueDateContainer = document.createElement("div");
+  dueDateContainer.className = "due-date-options";
+
+  const todayButton = document.createElement("button");
+  todayButton.className = "due-date-btn";
+  todayButton.textContent = "Today";
+  todayButton.addEventListener("click", () => {
+    task.dueDate = new Date().toISOString().split("T")[0];
+    saveTaskList(tasks);
+    renderTaskList(tasks, listManager);
+  });
+
+  const tomorrowButton = document.createElement("button");
+  tomorrowButton.className = "due-date-btn";
+  tomorrowButton.textContent = "Tomorrow";
+  tomorrowButton.addEventListener("click", () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    task.dueDate = tomorrow.toISOString().split("T")[0];
+    saveTaskList(tasks);
+    renderTaskList(tasks, listManager);
+  });
+
+  const customDateButton = document.createElement("button");
+  customDateButton.className = "due-date-btn";
+  customDateButton.textContent = "📅";
+  customDateButton.addEventListener("click", () => {
+    const existingDatePicker =
+      dueDateContainer.querySelector(".due-date-picker");
+    if (existingDatePicker) {
+      existingDatePicker.remove();
+      return; // Toggle logic: remove if already exists
+    }
+
+    const datePicker = document.createElement("input");
+    datePicker.type = "date";
+    datePicker.className = "due-date-picker";
+    datePicker.addEventListener("change", (e) => {
+      task.dueDate = e.target.value;
+      saveTaskList(tasks);
+      renderTaskList(tasks, listManager);
+    });
+    dueDateContainer.appendChild(datePicker);
+    datePicker.click();
+  });
+
+  dueDateContainer.append(todayButton, tomorrowButton, customDateButton);
+  return dueDateContainer;
+};
+
+const renderDueDateLabel = (task, tasks, listManager) => {
+  const dueDateLabel = document.createElement("span");
+  dueDateLabel.className = "task-due-date-pill";
+
+  if (task.dueDate) {
+    const today = new Date().toISOString().split("T")[0];
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowDate = tomorrow.toISOString().split("T")[0];
+
+    if (task.dueDate === today) {
+      dueDateLabel.textContent = "Today";
+    } else if (task.dueDate === tomorrowDate) {
+      dueDateLabel.textContent = "Tomorrow";
+    } else {
+      const options = { month: "short", day: "numeric", year: "numeric" };
+      dueDateLabel.textContent = new Date(task.dueDate).toLocaleDateString(
+        "en-US",
+        options
+      );
+    }
+  }
+
+  dueDateLabel.addEventListener("click", () => {
+    const taskElement = document.querySelector(
+      `.todo__item[data-id='${task.id}']`
+    );
+    const existingOptions = taskElement.querySelector(".due-date-options");
+    if (existingOptions) {
+      existingOptions.remove();
+    } else {
+      const dueDateOptions = renderDueDateOptions(task, tasks, listManager);
+      taskElement.appendChild(dueDateOptions);
+    }
+  });
+
+  return dueDateLabel;
+};
+
 export const renderTaskList = (tasks, listManager, filter = "all") => {
   taskListElement.innerHTML = "";
   const activeList = listManager.getActiveList();
@@ -46,77 +144,20 @@ export const renderTaskList = (tasks, listManager, filter = "all") => {
     text.className = "task-text";
     text.textContent = task.text;
 
-    const dueDateLabel = document.createElement("div");
-    dueDateLabel.className = "task-due-date-pill";
-    if (task.dueDate) {
-      const date = new Date(task.dueDate);
-      const options = { weekday: "short", month: "short", day: "numeric" };
-      dueDateLabel.textContent = date.toLocaleDateString("en-US", options);
-    } else {
-      dueDateLabel.style.display = "none";
-    }
-
-    dueDateLabel.addEventListener("click", () => {
-      dueDateLabel.style.display = "none";
-      showDateOptions(task, item, tasks, listManager);
-    });
-
     const taskContent = document.createElement("div");
     taskContent.className = "task-content";
     taskContent.append(checkbox, text);
-    taskContent.addEventListener("click", () => {
-      if (!task.dueDate) {
-        showDateOptions(task, item, tasks, listManager);
-      }
-    });
 
-    item.append(taskContent, dueDateLabel);
+    const dueDateLabel = renderDueDateLabel(task, tasks, listManager);
+    if (dueDateLabel) {
+      taskContent.appendChild(dueDateLabel);
+    }
+
+    item.append(taskContent);
     taskListElement.appendChild(item);
   });
   updateTaskCount(tasks);
 };
-
-function showDateOptions(task, item, tasks, listManager) {
-  const buttonRow = document.createElement("div");
-  buttonRow.className = "task-button-row";
-
-  const todayButton = document.createElement("button");
-  todayButton.className = "due-date-btn";
-  todayButton.textContent = "Today";
-  todayButton.addEventListener("click", () => {
-    task.dueDate = new Date().toISOString().split("T")[0];
-    saveTaskList(tasks);
-    renderTaskList(tasks, listManager);
-  });
-
-  const tomorrowButton = document.createElement("button");
-  tomorrowButton.className = "due-date-btn";
-  tomorrowButton.textContent = "Tomorrow";
-  tomorrowButton.addEventListener("click", () => {
-    task.dueDate = new Date(Date.now() + 86400000).toISOString().split("T")[0];
-    saveTaskList(tasks);
-    renderTaskList(tasks, listManager);
-  });
-
-  const calendarButton = document.createElement("button");
-  calendarButton.className = "due-date-btn";
-  calendarButton.textContent = "📅";
-  calendarButton.addEventListener("click", () => {
-    const dateInput = document.createElement("input");
-    dateInput.type = "date";
-    dateInput.addEventListener("change", (e) => {
-      task.dueDate = e.target.value;
-      saveTaskList(tasks);
-      renderTaskList(tasks, listManager);
-    });
-    item.appendChild(dateInput);
-    dateInput.click();
-    item.removeChild(dateInput);
-  });
-
-  buttonRow.append(todayButton, tomorrowButton, calendarButton);
-  item.appendChild(buttonRow);
-}
 
 export const renderListPopup = (listManager, taskList) => {
   const popupList = listPopup.querySelector(".popup__list");
@@ -240,4 +281,14 @@ export const applyFilter = (filter, tasks, listManager) => {
       ? tasks.filter((t) => t.isCompleted)
       : tasks.filter((t) => !t.isCompleted && !t.deleted);
   renderTaskList(filteredTasks, listManager, filter);
+};
+
+export {
+  taskListElement,
+  clearButton,
+  filterButtons,
+  taskCount,
+  listPopup,
+  allButton,
+  updateTaskCount,
 };

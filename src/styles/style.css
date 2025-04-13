@@ -241,7 +241,6 @@ button {
   font-size: 1rem;
 }
 
-/* Due date buttons styling */
 .todo__due-date {
   display: flex;
   gap: 0.5rem;
@@ -277,7 +276,6 @@ button {
   font-size: 1rem;
 }
 
-/* Update styles for task hover effect */
 .todo__list .todo__item {
   position: relative;
   padding: 1rem;
@@ -292,7 +290,6 @@ button {
   cursor: pointer;
 }
 
-/* Hide due date buttons by default */
 .todo__item .due-date-options {
   display: none;
   position: absolute;
@@ -303,12 +300,10 @@ button {
   gap: 0.5rem;
 }
 
-/* Show due date options on hover */
 .todo__item:hover .due-date-options {
   display: flex;
 }
 
-/* Style for due date buttons inside tasks */
 .todo__item .due-date-btn {
   background-color: var(--bg-color);
   color: var(--text-color);
@@ -324,14 +319,12 @@ button {
   color: white;
 }
 
-/* Style for task button row */
 .task-button-row {
   display: flex;
   gap: 0.5rem;
   margin-top: 0.5rem;
 }
 
-/* Style for due date buttons */
 .due-date-btn {
   background-color: #f1f3f4;
   color: #202124;
@@ -347,12 +340,10 @@ button {
   background-color: #e8eaed;
 }
 
-/* Style for hidden date picker */
 .hidden-date-picker {
   display: none;
 }
 
-/* Style for due date pill */
 .task-due-date-pill {
   display: inline-block;
   margin-top: 0.5rem;
@@ -362,6 +353,70 @@ button {
   border-radius: 12px;
   font-size: 0.8rem;
   text-align: center;
+}
+
+.todo__item .due-date-options {
+  display: flex;
+  flex-direction: row;
+  gap: 0.3rem;
+  position: relative;
+  margin-top: 1.5rem;
+  justify-content: flex-start;
+  align-items: center;
+  padding-left: 21px;
+}
+
+.todo__item .due-date-btn {
+  background-color: #f1f3f4;
+  color: #202124;
+  border: none;
+  border-radius: 16px;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.todo__item .due-date-btn:hover {
+  background-color: #e8eaed;
+}
+
+.todo__list .todo__item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0.8rem;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  transition: box-shadow 0.3s, background-color 0.3s;
+}
+
+.todo__list .todo__item .task-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.todo__list .todo__item .task-due-date-pill {
+  margin-top: 0.3rem;
+  padding: 0.2rem 0.6rem;
+  background-color: #e8eaed;
+  color: #202124;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.todo__list .todo__item .task-text {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.todo__list .todo__item .task-checkbox {
+  width: 18px;
+  height: 18px;
 }
 
 @media (max-width: 480px) {
