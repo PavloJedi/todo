@@ -87,6 +87,7 @@ export const renderListPopup = (listManager, taskList) => {
       renderTaskList(taskList.getTasks(), listManager);
       renderListPopup(listManager, taskList);
       updateActiveListButton(list.name);
+      listPopup.style.display = "none";
     });
 
     const deleteIcon = document.createElement("button");
@@ -98,7 +99,7 @@ export const renderListPopup = (listManager, taskList) => {
       listManager.list = listManager.list.filter((l) => l.id !== list.id);
       saveListManager(listManager);
       if (isActiveList) {
-        listManager.setActiveList(null); // Reset active list
+        listManager.setActiveList(null);
         updateActiveListButton("All");
       }
       renderListPopup(listManager, taskList);
@@ -125,10 +126,11 @@ export const renderListPopup = (listManager, taskList) => {
           if (listName) {
             const newList = listManager.createList(listName);
             listManager.setActiveList(newList.id);
-            saveListManager(listManager); // Save lists to LocalStorage
+            saveListManager(listManager);
             renderTaskList(taskList.getTasks(), listManager);
             updateActiveListButton(listName);
             renderListPopup(listManager, taskList);
+            listPopup.style.display = "none";
           }
           listPopup.removeChild(input);
           createButton.style.display = "block";

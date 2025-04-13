@@ -23,9 +23,9 @@ body {
   background: white;
   border-radius: 12px;
   box-shadow: 0 4px 6px var(--shadow-color);
-  width: 90%;
-  max-width: 600px;
-  padding: 2rem;
+  width: 80%;
+  max-width: 500px;
+  padding: 1.5rem;
 }
 
 .todo__header {
@@ -36,7 +36,7 @@ body {
 .todo__title {
   margin: 0;
   color: var(--primary-color);
-  font-size: 2.5rem;
+  font-size: 2rem;
 }
 
 .todo__counter {
@@ -86,6 +86,7 @@ button {
   list-style: none;
   padding: 0;
   margin: 0;
+  min-height: 200px;
 }
 
 .task-item {
