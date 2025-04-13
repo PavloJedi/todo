@@ -241,6 +241,129 @@ button {
   font-size: 1rem;
 }
 
+/* Due date buttons styling */
+.todo__due-date {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.due-date-btn {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.due-date-btn:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.due-date-btn.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.due-date-picker {
+  margin-top: 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+/* Update styles for task hover effect */
+.todo__list .todo__item {
+  position: relative;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  transition: box-shadow 0.3s, background-color 0.3s;
+}
+
+.todo__list .todo__item:hover {
+  box-shadow: 0 4px 6px var(--shadow-color);
+  background-color: var(--bg-color);
+  cursor: pointer;
+}
+
+/* Hide due date buttons by default */
+.todo__item .due-date-options {
+  display: none;
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Show due date options on hover */
+.todo__item:hover .due-date-options {
+  display: flex;
+}
+
+/* Style for due date buttons inside tasks */
+.todo__item .due-date-btn {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.8rem;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.todo__item .due-date-btn:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* Style for task button row */
+.task-button-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+/* Style for due date buttons */
+.due-date-btn {
+  background-color: #f1f3f4;
+  color: #202124;
+  border: none;
+  border-radius: 16px;
+  padding: 0.4rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.due-date-btn:hover {
+  background-color: #e8eaed;
+}
+
+/* Style for hidden date picker */
+.hidden-date-picker {
+  display: none;
+}
+
+/* Style for due date pill */
+.task-due-date-pill {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.3rem 0.8rem;
+  background-color: #e8eaed;
+  color: #202124;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  text-align: center;
+}
+
 @media (max-width: 480px) {
   .todo {
     padding: 1rem;

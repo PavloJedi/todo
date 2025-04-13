@@ -39,38 +39,84 @@ export const renderTaskList = (tasks, listManager, filter = "all") => {
     checkbox.addEventListener("change", () => {
       task.isCompleted = checkbox.checked;
       saveTaskList(tasks);
-      const activeFilterButton = document.querySelector(
-        ".todo__filter-btn.active"
-      );
-      const activeFilter = activeFilterButton
-        ? activeFilterButton.dataset.filter
-        : "all";
-      renderTaskList(tasks, listManager, activeFilter);
+      renderTaskList(tasks, listManager, filter);
     });
 
     const text = document.createElement("span");
+    text.className = "task-text";
     text.textContent = task.text;
 
-    const deleteButton = document.createElement("button");
-    deleteButton.innerHTML = "&times;";
-    deleteButton.className = "task-delete-btn";
-    deleteButton.addEventListener("click", () => {
-      task.deleted = true;
-      saveTaskList(tasks);
-      const activeFilterButton = document.querySelector(
-        ".todo__filter-btn.active"
-      );
-      const activeFilter = activeFilterButton
-        ? activeFilterButton.dataset.filter
-        : "all";
-      renderTaskList(tasks, listManager, activeFilter);
+    const dueDateLabel = document.createElement("div");
+    dueDateLabel.className = "task-due-date-pill";
+    if (task.dueDate) {
+      const date = new Date(task.dueDate);
+      const options = { weekday: "short", month: "short", day: "numeric" };
+      dueDateLabel.textContent = date.toLocaleDateString("en-US", options);
+    } else {
+      dueDateLabel.style.display = "none";
+    }
+
+    dueDateLabel.addEventListener("click", () => {
+      dueDateLabel.style.display = "none";
+      showDateOptions(task, item, tasks, listManager);
     });
 
-    item.append(checkbox, text, deleteButton);
+    const taskContent = document.createElement("div");
+    taskContent.className = "task-content";
+    taskContent.append(checkbox, text);
+    taskContent.addEventListener("click", () => {
+      if (!task.dueDate) {
+        showDateOptions(task, item, tasks, listManager);
+      }
+    });
+
+    item.append(taskContent, dueDateLabel);
     taskListElement.appendChild(item);
   });
   updateTaskCount(tasks);
 };
+
+function showDateOptions(task, item, tasks, listManager) {
+  const buttonRow = document.createElement("div");
+  buttonRow.className = "task-button-row";
+
+  const todayButton = document.createElement("button");
+  todayButton.className = "due-date-btn";
+  todayButton.textContent = "Today";
+  todayButton.addEventListener("click", () => {
+    task.dueDate = new Date().toISOString().split("T")[0];
+    saveTaskList(tasks);
+    renderTaskList(tasks, listManager);
+  });
+
+  const tomorrowButton = document.createElement("button");
+  tomorrowButton.className = "due-date-btn";
+  tomorrowButton.textContent = "Tomorrow";
+  tomorrowButton.addEventListener("click", () => {
+    task.dueDate = new Date(Date.now() + 86400000).toISOString().split("T")[0];
+    saveTaskList(tasks);
+    renderTaskList(tasks, listManager);
+  });
+
+  const calendarButton = document.createElement("button");
+  calendarButton.className = "due-date-btn";
+  calendarButton.textContent = "📅";
+  calendarButton.addEventListener("click", () => {
+    const dateInput = document.createElement("input");
+    dateInput.type = "date";
+    dateInput.addEventListener("change", (e) => {
+      task.dueDate = e.target.value;
+      saveTaskList(tasks);
+      renderTaskList(tasks, listManager);
+    });
+    item.appendChild(dateInput);
+    dateInput.click();
+    item.removeChild(dateInput);
+  });
+
+  buttonRow.append(todayButton, tomorrowButton, calendarButton);
+  item.appendChild(buttonRow);
+}
 
 export const renderListPopup = (listManager, taskList) => {
   const popupList = listPopup.querySelector(".popup__list");
