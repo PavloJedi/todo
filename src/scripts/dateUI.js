@@ -60,43 +60,4 @@ const renderDueDateOptions = (task, tasks, listManager) => {
   return dueDateContainer;
 };
 
-const renderDueDateLabel = (task, tasks, listManager) => {
-  const dueDateLabel = document.createElement("span");
-  dueDateLabel.className = "task-due-date-pill";
-
-  if (task.dueDate) {
-    const today = new Date().toISOString().split("T")[0];
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const tomorrowDate = tomorrow.toISOString().split("T")[0];
-
-    if (task.dueDate === today) {
-      dueDateLabel.textContent = "Today";
-    } else if (task.dueDate === tomorrowDate) {
-      dueDateLabel.textContent = "Tomorrow";
-    } else {
-      const options = { month: "short", day: "numeric", year: "numeric" };
-      dueDateLabel.textContent = new Date(task.dueDate).toLocaleDateString(
-        "en-US",
-        options
-      );
-    }
-  }
-
-  dueDateLabel.addEventListener("click", () => {
-    const taskElement = document.querySelector(
-      `.todo__item[data-id='${task.id}']`
-    );
-    const existingOptions = taskElement.querySelector(".due-date-options");
-    if (existingOptions) {
-      existingOptions.remove();
-    } else {
-      const dueDateOptions = renderDueDateOptions(task, tasks, listManager);
-      taskElement.appendChild(dueDateOptions);
-    }
-  });
-
-  return dueDateLabel;
-};
-
-export { renderDueDateOptions, renderDueDateLabel };
+export { renderDueDateOptions };
