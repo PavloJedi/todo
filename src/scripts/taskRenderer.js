@@ -1,5 +1,4 @@
 import { taskListElement, updateTaskCount } from "./ui.js";
-import { renderDueDateLabel } from "./dateUI.js";
 import { saveTaskList } from "./storage.js";
 
 const renderTaskList = (tasks, listManager, filter = "all") => {
@@ -40,12 +39,78 @@ const renderTaskList = (tasks, listManager, filter = "all") => {
     taskContent.className = "task-content";
     taskContent.append(checkbox, text);
 
-    const dueDateLabel = renderDueDateLabel(task, tasks, listManager);
-    if (dueDateLabel) {
-      taskContent.appendChild(dueDateLabel);
+    item.append(taskContent);
+    item.addEventListener("click", (e) => {
+      if (e.target.classList.contains("task-checkbox")) return;
+      if (item.querySelector(".due-date-options")) return;
+      const dueDateContainer = document.createElement("div");
+      dueDateContainer.className = "due-date-options";
+      const todayButton = document.createElement("button");
+      todayButton.className = "due-date-btn";
+      todayButton.textContent = "Today";
+      todayButton.addEventListener("click", (ev) => {
+        ev.stopPropagation();
+        task.dueDate = new Date().toISOString().split("T")[0];
+        saveTaskList(tasks);
+        renderTaskList(tasks, listManager, filter);
+      });
+      const tomorrowButton = document.createElement("button");
+      tomorrowButton.className = "due-date-btn";
+      tomorrowButton.textContent = "Tomorrow";
+      tomorrowButton.addEventListener("click", (ev) => {
+        ev.stopPropagation();
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        task.dueDate = tomorrow.toISOString().split("T")[0];
+        saveTaskList(tasks);
+        renderTaskList(tasks, listManager, filter);
+      });
+      const customDateButton = document.createElement("button");
+      customDateButton.className = "due-date-btn";
+      customDateButton.textContent = "📅";
+      customDateButton.addEventListener("click", (ev) => {
+        ev.stopPropagation();
+        if (dueDateContainer.querySelector(".due-date-picker")) return;
+        const datePicker = document.createElement("input");
+        datePicker.type = "date";
+        datePicker.className = "due-date-picker";
+        datePicker.value = task.dueDate || "";
+        datePicker.addEventListener("change", (e2) => {
+          task.dueDate = e2.target.value;
+          saveTaskList(tasks);
+          renderTaskList(tasks, listManager, filter);
+        });
+        dueDateContainer.appendChild(datePicker);
+        setTimeout(() => {
+          datePicker.showPicker ? datePicker.showPicker() : datePicker.focus();
+        }, 0);
+      });
+      dueDateContainer.append(todayButton, tomorrowButton, customDateButton);
+      item.appendChild(dueDateContainer);
+    });
+
+    // Show selected date as plain text if set
+    if (task.dueDate) {
+      const dateText = document.createElement("span");
+      dateText.className = "task-date-text styled-date-pill";
+      const today = new Date().toISOString().split("T")[0];
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const tomorrowDate = tomorrow.toISOString().split("T")[0];
+      if (task.dueDate === today) {
+        dateText.textContent = "Today";
+      } else if (task.dueDate === tomorrowDate) {
+        dateText.textContent = "Tomorrow";
+      } else {
+        const options = { month: "short", day: "numeric", year: "numeric" };
+        dateText.textContent = new Date(task.dueDate).toLocaleDateString(
+          "en-US",
+          options
+        );
+      }
+      taskContent.appendChild(dateText);
     }
 
-    item.append(taskContent);
     taskListElement.appendChild(item);
   });
   updateTaskCount(tasks);
