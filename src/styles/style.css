@@ -23,7 +23,7 @@ body {
   background: white;
   border-radius: 12px;
   box-shadow: 0 4px 6px var(--shadow-color);
-  width: 80%;
+  width: 100%;
   max-width: 500px;
   padding: 1.5rem;
 }
